@@ -23,9 +23,6 @@ import (
 	"sync"
 )
 
-/**
-@author Alex Shvid
-*/
 
 type registry struct {
 	sync.RWMutex

@@ -24,10 +24,6 @@ import (
 	"reflect"
 )
 
-/**
-@author Alex Shvid
-*/
-
 
 type injectionDef struct {
 

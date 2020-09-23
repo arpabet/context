@@ -20,9 +20,6 @@ package context
 
 import "reflect"
 
-/**
-@author Alex Shvid
- */
 
 var Verbose = true
 

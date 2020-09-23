@@ -1,4 +1,4 @@
-module github.com/consensusdb/context
+module github.com/arpabet/context
 
 go 1.14
 

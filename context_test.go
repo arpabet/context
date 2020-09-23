@@ -20,7 +20,7 @@ package context_test
 
 import (
 	"fmt"
-	"github.com/consensusdb/context"
+	"github.com/arpabet/context"
 	"github.com/stretchr/testify/require"
 	"log"
 	"os"
@@ -29,10 +29,6 @@ import (
 	"sync"
 	"testing"
 )
-
-/**
-@author Alex Shvid
-*/
 
 func TestCreateNil(t *testing.T) {
 

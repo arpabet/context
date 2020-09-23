@@ -26,9 +26,6 @@ import (
 	"sync"
 )
 
-/**
-@author Alex Shvid
-*/
 
 
 type context struct {
