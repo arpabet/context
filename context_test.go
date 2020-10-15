@@ -20,7 +20,7 @@ package context_test
 
 import (
 	"fmt"
-	"github.com/arpabet/context"
+	"arpabet.pkg.is/context"
 	"github.com/stretchr/testify/require"
 	"log"
 	"os"

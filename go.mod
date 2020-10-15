@@ -1,4 +1,4 @@
-module github.com/arpabet/context
+module arpabet.pkg.is/context
 
 go 1.14
 
