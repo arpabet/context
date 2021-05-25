@@ -27,13 +27,18 @@ type configService struct {
     logger *zap.Logger  `inject`
 }
 
+type appService struct {
+	context.Context  `inject`
+}
+
 func Initialize() (context.Context, error) {
     logger, _ := newLogger()
 	return context.Create(
 		logger,
 		storage,
 		&userService{},
-		&configService{})
+		&configService{},
+        &appService{})
 }
 
 beans := ctx.Bean("app.UserService")
