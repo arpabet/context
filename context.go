@@ -31,7 +31,7 @@ import (
 type context struct {
 
 	/**
-		All instances scanned on creation of context.
+		All instances scanned during creation of context.
 	    No modifications on runtime.
 	 */
 	core map[reflect.Type]*bean
@@ -57,6 +57,23 @@ func Create(scan... interface{}) (Context, error) {
 	core := make(map[reflect.Type]*bean)
 	pointers := make(map[reflect.Type][]*injection)
 	interfaces := make(map[reflect.Type][]*injection)
+
+	ctx := &context{
+		core:        core,
+		registry:    registry{
+			beansByName: beansByName,
+			beansByType: beansByType,
+		},
+	}
+
+	ctxBean := &bean{
+		obj:           ctx,
+		valuePtr:      reflect.ValueOf(ctx),
+		beanDef:  &beanDef{
+			classPtr:      reflect.TypeOf(ctx),
+		},
+	}
+	core[ctxBean.beanDef.classPtr] = ctxBean
 
 	// scan
 	for i, obj := range scan {
@@ -147,12 +164,6 @@ func Create(scan... interface{}) (Context, error) {
 		name := ifaceType.String()
 		beansByName[name] = append(beansByName[name], service)
 	}
-
-	ctx := &context{
-		core:        core,
-	}
-	ctx.registry.beansByName = beansByName
-	ctx.registry.beansByType = beansByType
 
 	return ctx, ctx.postConstruct()
 }

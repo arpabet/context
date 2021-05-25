@@ -36,9 +36,14 @@ func Initialize() (context.Context, error) {
 	return context.Create(
 		logger,
 		storage,
-		&userService{},
 		&configService{},
-        &appService{})
+		&userService{},
+        &appService{},
+		&struct{
+			UserService `inject`
+			AppService  `inject`
+		}{},
+        )
 }
 
 beans := ctx.Bean("app.UserService")

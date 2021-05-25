@@ -23,7 +23,7 @@ import "reflect"
 
 var Verbose = true
 
-
+var ContextClass = reflect.TypeOf((*Context)(nil)).Elem()
 type Context interface {
 	/**
 		Destroy all beans that implement interface DisposableBean.

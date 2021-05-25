@@ -44,7 +44,12 @@ func TestCreateEmpty(t *testing.T) {
 	ctx, err := context.Create()
 	require.Nil(t, err)
 	require.NotNil(t, ctx)
-	require.Equal(t, 0, len(ctx.Core()))
+	require.Equal(t, 1, len(ctx.Core()))
+
+	c, ok := ctx.Bean(context.ContextClass)
+	require.True(t, ok)
+	require.NotNil(t, c)
+	require.Equal(t, ctx, c)
 
 }
 
@@ -64,6 +69,11 @@ var UserServiceClass = reflect.TypeOf((*UserService)(nil)).Elem()
 type UserService interface {
 	GetUser(user string) string
 	SaveUser(user, details string)
+}
+
+var AppServiceClass = reflect.TypeOf((*AppService)(nil)).Elem()
+type AppService interface {
+	GetContext() context.Context
 }
 
 type storageImpl struct {
@@ -125,6 +135,14 @@ func (t *userServiceImpl) PostConstruct() error {
 	return nil
 }
 
+type appServiceImpl struct {
+	context.Context        `inject`
+}
+
+func (t *appServiceImpl) GetContext() context.Context {
+	return t.Context
+}
+
 func TestCreate(t *testing.T) {
 
 	context.Verbose = true
@@ -135,15 +153,19 @@ func TestCreate(t *testing.T) {
 		&storageImpl{},
 		&configServiceImpl{},
 		&userServiceImpl{},
+		&appServiceImpl{},
 		/**
 		    needed to define usage of UserService in context in order to register bean name with this interface name
 		 */
-		&struct{ UserService `inject` }{},
+		&struct{
+			UserService `inject`
+			AppService  `inject`
+		}{},
 	)
 
 	require.Nil(t, err)
 	require.NotNil(t, ctx)
-	require.Equal(t, 5, len(ctx.Core()))
+	require.Equal(t, 7, len(ctx.Core()))
 
 	beans := ctx.Lookup("context_test.Storage")
 	require.Equal(t, 1, len(beans))
@@ -166,6 +188,13 @@ func TestCreate(t *testing.T) {
 	require.Equal(t, userServiceInstance.Storage, storageInstance)
 	require.Equal(t, userServiceInstance.ConfigService, configServiceInstance)
 	require.Equal(t, userServiceInstance, ctx.MustBean(UserServiceClass))
+
+	beans = ctx.Lookup("context_test.AppService")
+	require.Equal(t, 1, len(beans))
+	appServiceInstance := beans[0].(*appServiceImpl)
+	require.NotNil(t, appServiceInstance)
+	require.Equal(t, ctx, appServiceInstance.GetContext())
+	require.Equal(t, appServiceInstance, ctx.MustBean(AppServiceClass))
 
 }
 
